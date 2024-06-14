@@ -4,6 +4,7 @@ import 'dotenv/config';
 
 import conectarDB from "./Config/db.js";
 import usuarioRoutes from "./router/usuario.routes.js";
+import clientesRoutes from "./router/clientes.routes.js";
 
 const app = express();
 
@@ -21,6 +22,7 @@ conectarDB();
 // Definir rutas
 
 app.use('/api/v1', usuarioRoutes);
+app.use('/api/v1', clientesRoutes);
 
 const PORT = process.env.PORT || 4000;
 

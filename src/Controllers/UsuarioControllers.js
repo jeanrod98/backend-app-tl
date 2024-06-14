@@ -1,5 +1,6 @@
+import Clientes from "../Models/Clientes.js";
 import Usuarios from "../Models/Usuarios.js";
-import emailRegistro from "../helpers/emailRegistro.js";
+import {emailRegistro} from "../helpers/emailRegistro.js";
 import generarJWT from "../helpers/generarJWT.js";
 
 // * Registrar usuario
@@ -41,6 +42,8 @@ const registrarUsuario = async (req, res) => {
       correo: usuariosGuardados.correo_usu,
       nombres: usuariosGuardados.nombres_usu.toUpperCase(),
       token: usuariosGuardados.token_usu,
+      tipo: "Regular"
+
     });
 
     // console.log(usuarioRegistrado);
@@ -57,9 +60,10 @@ const autenticarUsuario = async (req, res) => {
     //comproba si el ususario existe
   
     const usuario = await Usuarios.findOne({ correo_usu: correo });
-    console.log(usuario);
+    const cliente = await Clientes.findOne({ correo_cli: correo });
+    // console.log(usuario);
   
-    if (!usuario) {
+    if (!usuario && !cliente) {
       const error = new Error("EL USUARIO NO EXISTE.");
       return res.status(404).json({ msg: error.message });
     }
@@ -71,14 +75,38 @@ const autenticarUsuario = async (req, res) => {
   
         return res.json({
           _id: usuario._id,
-          nombres_usu: usuario.nombres_usu,
-          correo_usu: usuario.correo_usu,
-          token_usu: usuario.token_usu,
+          nombres: usuario.nombres_usu,
+          correo: usuario.correo_usu,
+          token: usuario.token_usu,
           token_session: generarJWT(usuario._id),
-          tipo_usu: usuario.tipo_usu,
-          telefono_usu: usuario.telefono_usu,
-          direccion_usu: usuario.direccion_usu,
-          cedula_usu: usuario.cedula_usu,
+          tipo: usuario.tipo_usu,
+          telefono: usuario.telefono_usu,
+          direccion: usuario.direccion_usu,
+          cedula: usuario.cedula_usu,
+
+        });
+      } else {
+        const error = new Error("LA CONTRASEÑA ES INCORRECTA.");
+        return res.status(403).json({ msg: error.message });
+      }
+    }
+
+    // authenticacion con cliente
+    if (cliente) {
+      if (await cliente.comprobarPassword(password)) {
+        // consultar el tipo de usuario 
+  
+        return res.json({
+          _id: cliente._id,
+          nombres: cliente.nombres_cli,
+          correo: cliente.correo_cli,
+          token: cliente.token_cli,
+          token_session: generarJWT(cliente._id),
+          tipo: cliente.tipo_cli,
+          terapeuta: cliente.terapeuta_cli,
+          telefono: cliente.telefono_cli,
+          direccion: cliente.direccion_cli,
+          cedula: cliente.cedula_cli,
 
         });
       } else {
@@ -113,19 +141,32 @@ const perfilUsuario = (req, res) => {
               
           }
   
-          usuarioEncontrado.nombres_usu = req.body?.nombres_usu.toUpperCase() || usuarioEncontrado.nombres_usu;
-          usuarioEncontrado.correo_usu = req.body?.correo_usu.toLowerCase() || usuarioEncontrado.correo_usu;
-          usuarioEncontrado.telefono_usu = req.body?.telefono_usu || usuarioEncontrado.telefono_usu;
-          usuarioEncontrado.direccion_usu = req.body?.direccion_usu || usuarioEncontrado.direccion_usu;
-          usuarioEncontrado.cedula_usu = req.body?.cedula_usu || usuarioEncontrado.cedula_usu;
-          usuarioEncontrado.tipo_usu = req.body?.tipo_usu || usuarioEncontrado.tipo_usu;
-          usuarioEncontrado.userUpdatedAt = req.body?.nombres_usu.toUpperCase() || usuarioEncontrado.userUpdatedAt;
+          usuarioEncontrado.nombres_usu = req.body?.nombres.toUpperCase() || usuarioEncontrado.nombres_usu;
+          usuarioEncontrado.correo_usu = req.body?.correo.toLowerCase() || usuarioEncontrado.correo_usu;
+          usuarioEncontrado.telefono_usu = req.body?.telefono || usuarioEncontrado.telefono_usu;
+          usuarioEncontrado.direccion_usu = req.body?.direccion || usuarioEncontrado.direccion_usu;
+          usuarioEncontrado.cedula_usu = req.body?.cedula || usuarioEncontrado.cedula_usu;
+          usuarioEncontrado.tipo_usu = req.body?.tipo || usuarioEncontrado.tipo_usu;
+          usuarioEncontrado.userUpdatedAt = req.body?.nombres.toUpperCase() || usuarioEncontrado.userUpdatedAt;
          
           
   
           const usuarioGuardado = await usuarioEncontrado.save();
   
-          res.json(usuarioGuardado);
+          res.json({
+            _id: usuarioGuardado._id,
+          nombres: usuarioGuardado.nombres_usu,
+          correo: usuarioGuardado.correo_usu,
+          cedula: usuarioGuardado.cedula_usu,
+          tipo: usuarioGuardado.tipo_usu,
+          telefono: usuarioGuardado.telefono_usu,
+          direccion: usuarioGuardado.direccion_usu,
+          token: usuarioGuardado.token_usu,
+          userCreatedAt: usuarioGuardado.userCreatedAt,
+          userUpdatedAt: usuarioGuardado.userUpdatedAt,
+          createdAt: usuarioGuardado.createdAt,
+          updatedAt: usuarioGuardado.updatedAt,
+          });
           
       } catch (error) {
           console.log(error);
@@ -138,18 +179,18 @@ const perfilUsuario = (req, res) => {
 
   const cambiarPassword = async (req, res) => {
     const { id } = req.params;
-    const { password_usu, nueva_password_usu } = req.body;
+    const { password, nueva_password } = req.body;
   
     const usuario = await Usuarios.findById({ _id: id });
   
-    if (!(await usuario.comprobarPassword(password_usu))) {
+    if (!(await usuario.comprobarPassword(password))) {
       const e = new Error("La contraseña es incorrecta.");
       return res.status(403).json({ msg: e.message, error: true });
     }
   
     try {
       //*  Actualizar password
-      usuario.password_usu = nueva_password_usu;
+      usuario.password_usu = nueva_password;
       await usuario.save();
       res.json({ msg: "La contraseña fue actualizada con éxito." });
     } catch (error) {
