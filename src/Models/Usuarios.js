@@ -1,44 +1,55 @@
 import mongoose from "mongoose";
 import generarToken from "../helpers/generarToken.js";
-import bcrypt from "bcrypt"
+import bcrypt from "bcrypt";
 
 const usuarioSchema = mongoose.Schema(
   {
-   
     nombres_usu: {
-        type: String,
-        trim: true,
-        require: true,
-      },
+      type: String,
+      trim: true,
+      require: true,
+    },
     correo_usu: {
       type: String,
       unique: true,
       trim: true,
       require: true,
     },
+    cedula_usu: {
+      type: String,
+      default: null,
+    },
     password_usu: {
       type: String,
       trim: true,
       require: true,
     },
-    
+
     tipo_usu: {
-        type: String,
-        require: true,
-      },
+      type: String,
+      require: true,
+    },
+    telefono_usu: {
+      type: String,
+      default: null,
+    },
+    direccion_usu: {
+      type: String,
+      default: null,
+    },
     token_usu: {
       type: String,
-      default: generarToken(),
+      default: null,
     },
     userCreatedAt: {
       type: String,
       trim: true,
-      default: new Date().toLocaleString('EC')
+      default: new Date().toLocaleString("EC"),
     },
     userUpdatedAt: {
       type: String,
       trim: true,
-      default: new Date().toLocaleString('EC')
+      default: new Date().toLocaleString("EC"),
     },
   },
   {
