@@ -58,9 +58,11 @@ const registrarAvance = async (req, res) => {
       //Guardar un nuevo Detalle de avance
       const detalle = new DetalleAvances({
         id_avance_det: existeAvance._id,
-        aciertos_pro_av: aciertos,
-        errores_pro_av: errores,
-        tiempo_modulo_av: tiempo,
+        aciertos_pro_av: parseInt(aciertos),
+        errores_pro_av: parseInt(errores),
+        tiempo_modulo_av: parseInt(tiempo),
+        intentos_pro_av: parseInt(aciertos) + parseInt(errores),
+        promedio_pro_av: (parseInt(aciertos)/(parseInt(aciertos) + parseInt(errores))) * 10,
         userCreatedAt: usuario?.toUpperCase(),
         userUpdatedAt: usuario?.toUpperCase(),
       });
@@ -81,9 +83,11 @@ const registrarAvance = async (req, res) => {
       //Guardar un nuevo Detalle de avance
       const detalle = new DetalleAvances({
         id_avance_det: avanceRegistrado._id,
-        aciertos_pro_av: aciertos,
-        errores_pro_av: errores,
-        tiempo_modulo_av: tiempo,
+        aciertos_pro_av: parseInt(aciertos),
+        errores_pro_av: parseInt(errores),
+        tiempo_modulo_av: parseInt(tiempo),
+        intentos_pro_av: parseInt(aciertos) + parseInt(errores),
+        promedio_pro_av: (parseInt(aciertos)/(parseInt(aciertos) + parseInt(errores))) * 10,
         userCreatedAt: usuario?.toUpperCase(),
         userUpdatedAt: usuario?.toUpperCase(),
       });

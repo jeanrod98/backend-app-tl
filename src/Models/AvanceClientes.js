@@ -12,7 +12,6 @@ const avanceSchema = mongoose.Schema(
     },
     nombreModulo_av: {
       type: String,
-      unique: true,
       trim: true,
       require: true,
     },
