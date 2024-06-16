@@ -33,7 +33,7 @@ const registrarCliente = async (req, res) => {
 
   // REVISAR EL CORREO
   if (existeClienteCorreo) {
-    const error = new Error("EL CORREO YA ESTÁ OCUPADO POR UN Cliente.");
+    const error = new Error("EL CORREO YA ESTÁ OCUPADO POR UN CLIENTE.");
     //retorna mensaje de error
     return res.status(400).json({ msg: error.message, error: true });
   }

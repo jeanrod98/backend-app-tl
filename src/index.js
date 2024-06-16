@@ -5,6 +5,7 @@ import 'dotenv/config';
 import conectarDB from "./Config/db.js";
 import usuarioRoutes from "./router/usuario.routes.js";
 import clientesRoutes from "./router/clientes.routes.js";
+import avanceRoutes from "./router/avance.routes.js";
 
 const app = express();
 
@@ -23,6 +24,7 @@ conectarDB();
 
 app.use('/api/v1', usuarioRoutes);
 app.use('/api/v1', clientesRoutes);
+app.use('/api/v1', avanceRoutes);
 
 const PORT = process.env.PORT || 4000;
 
