@@ -46,11 +46,11 @@ const registrarAvance = async (req, res) => {
   // console.log(req.body);
 
   //Comprobar AVANCE existe
-  const existeAvance = await AvanceClientes.findOne({ fecha_av: fecha_avance });
+  const existeAvance = await AvanceClientes.findOne({ fecha_av: fecha_avance, nombreModulo_av: modulo });
 
   try {
     // todo: Si existe el avance entonces se registra el detalle
-    if (existeAvance) {
+    if (existeAvance?.nombreModulo_av === modulo && existeAvance?.fecha_av === fecha_avance) {
       //   const error = new Error("ESTA FECHA YA ESTÁ REGISTRADA.");
       //   //retorna mensaje de error
       //   return res.status(400).json({ msg: error.message, error: true });
