@@ -1,4 +1,5 @@
 import Clientes from "../Models/Clientes.js";
+import Usuarios from "../Models/Usuarios.js";
 import { emailRegistroCliente } from "../helpers/emailRegistro.js";
 
 // *Consultar todos los usuarios
@@ -29,11 +30,14 @@ const registrarCliente = async (req, res) => {
   // console.log(req.body);
 
   //Comprobar Cliente duplicado
-  const existeClienteCorreo = await Clientes.findOne({ correo_usu: correo });
+  const existeClienteCorreo = await Clientes.findOne({ correo_cli: correo });
+  //Comprobar Usuario duplicado
+
+  const existeUsuarioCorreo = await Usuarios.findOne({ correo_usu: correo });
 
   // REVISAR EL CORREO
-  if (existeClienteCorreo) {
-    const error = new Error("EL CORREO YA ESTÁ OCUPADO POR UN CLIENTE.");
+  if (existeClienteCorreo || existeUsuarioCorreo) {
+    const error = new Error("EL CORREO YA ESTÁ OCUPADO POR UN USUARIO/CLIENTE.");
     //retorna mensaje de error
     return res.status(400).json({ msg: error.message, error: true });
   }
