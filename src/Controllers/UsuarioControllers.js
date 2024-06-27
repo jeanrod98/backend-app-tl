@@ -62,6 +62,7 @@ const autenticarUsuario = async (req, res) => {
     const usuario = await Usuarios.findOne({ correo_usu: correo });
     const cliente = await Clientes.findOne({ correo_cli: correo });
     // console.log(usuario);
+    console.log(password);
   
     if (!usuario && !cliente) {
       const error = new Error("EL USUARIO NO EXISTE.");

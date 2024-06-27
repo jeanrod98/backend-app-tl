@@ -158,6 +158,7 @@ const eliminarCliente = async (req, res) => {
     const { password, nueva_password } = req.body;
   
     const cliente = await Clientes.findById({ _id: id });
+    console.log(nueva_password);
   
     if (!(await cliente.comprobarPassword(password))) {
       const e = new Error("La contraseña es incorrecta.");
